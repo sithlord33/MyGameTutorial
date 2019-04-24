@@ -1,5 +1,7 @@
 package richy.mygame;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,13 +22,16 @@ public class GameplayScene implements Scene {
 
     private OrientationData orientationData;
     private long frameTime;
+    Paint paint = new Paint();
+    BitmapFactory bf = new BitmapFactory();
+    Bitmap floor = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
 
     public GameplayScene() {
         player = new RectPlayer(new Rect(100, 100, 200, 200), Color.rgb(255, 0, 0));
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
         player.update(playerPoint);
 
-        obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);
+        obstacleManager = new ObstacleManager(200, 350, 100, Color.BLACK);
 
         orientationData = new OrientationData();
         orientationData.register();;
@@ -36,7 +41,7 @@ public class GameplayScene implements Scene {
     public void reset() {
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
         player.update(playerPoint);
-        obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);
+        obstacleManager = new ObstacleManager(200, 350, 100, Color.BLACK);
         movingPlayer = false;
     }
 
@@ -69,13 +74,12 @@ public class GameplayScene implements Scene {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawColor(Color.WHITE);
-
-        player.draw(canvas);
+        canvas.drawBitmap(floor, 0, 0, paint);
         obstacleManager.draw(canvas);
+        player.draw(canvas);
+
 
         if (gameOver) {
-            Paint paint = new Paint();
             paint.setTextSize(100);
             paint.setColor(Color.MAGENTA);
             drawCenterText(canvas, paint, "Game Over");
