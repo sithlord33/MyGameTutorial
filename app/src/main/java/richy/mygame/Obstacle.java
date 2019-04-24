@@ -60,8 +60,8 @@ public class Obstacle implements GameObject {
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(color);
-        canvas.drawBitmap(wall, rectangle.left, rectangle.bottom, paint);
-        canvas.drawBitmap(wall2, rectangle2.left, rectangle2.bottom, paint);
+        canvas.drawBitmap(wall, rectangle.left, rectangle.top, paint);
+        canvas.drawBitmap(wall2, rectangle2.left, rectangle2.top, paint);
     }
 
     @Override
