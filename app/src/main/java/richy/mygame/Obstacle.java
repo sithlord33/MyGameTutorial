@@ -23,7 +23,8 @@ public class Obstacle implements GameObject {
     private int color;
     BitmapFactory bf = new BitmapFactory();
     Bitmap wall = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.wall);
-    Bitmap wall2 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.wall);
+    Bitmap walluse;
+    Bitmap wall2use;
 
 
     public Rect getRectangle() {
@@ -45,11 +46,8 @@ public class Obstacle implements GameObject {
 
         rectangle2 = new Rect(startX + playerGap, startY, Constants.SCREEN_WIDTH, startY + rectHeight);
         wall = wall.copy(Bitmap.Config.ARGB_8888,true);
-        wall2 = wall2.copy(Bitmap.Config.ARGB_8888,true);
-        wall.setHeight(rectangle.bottom - rectangle.top);
-        wall.setWidth(rectangle.right - rectangle.left);
-        wall2.setHeight(rectangle2.bottom - rectangle2.top);
-        wall2.setWidth(rectangle2.right - rectangle2.left);
+        walluse = Bitmap.createBitmap(wall, 0, 0, rectangle.right - rectangle.left, rectangle.bottom - rectangle.top);
+        wall2use = Bitmap.createBitmap(wall, 0, 0, rectangle2.right - rectangle2.left, rectangle2.bottom - rectangle2.top);
     }
 
     public boolean playerCollide(RectPlayer player) {
@@ -60,8 +58,8 @@ public class Obstacle implements GameObject {
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(color);
-        canvas.drawBitmap(wall, rectangle.left, rectangle.top, paint);
-        canvas.drawBitmap(wall2, rectangle2.left, rectangle2.top, paint);
+        canvas.drawBitmap(walluse, rectangle.left, rectangle.top, paint);
+        canvas.drawBitmap(wall2use, rectangle2.left, rectangle2.top, paint);
     }
 
     @Override
