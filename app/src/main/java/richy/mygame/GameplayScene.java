@@ -80,10 +80,12 @@ public class GameplayScene implements Scene {
 
     @Override
     public void draw(Canvas canvas) {
-        if (posx < 6)
-            posx = floor.getHeight() - Constants.SCREEN_HEIGHT;
-        posx = posx - (int)obstacleManager.Rspeed;
-        canvas.drawBitmap(floor, 0, 0 -posx, paint);
+        if (!gameOver) {
+            if (posx < 6)
+                posx = floor.getHeight() - Constants.SCREEN_HEIGHT;
+            posx = posx - (int) obstacleManager.Rspeed;
+        }
+        canvas.drawBitmap(floor, 0, 0 - posx, paint);
         obstacleManager.draw(canvas);
         player.draw(canvas);
 
