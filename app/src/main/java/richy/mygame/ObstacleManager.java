@@ -19,6 +19,8 @@ public class ObstacleManager {
 
     private int score = 0;
 
+    float Rspeed = 0;
+
     public ObstacleManager(int playerGap, int obstacleGap, int obstacleHeight, int color) {
         this.playerGap = playerGap;
         this.obstacleGap = obstacleGap;
@@ -55,7 +57,7 @@ public class ObstacleManager {
         startTime = System.currentTimeMillis();
         float speed = (float) Math.sqrt(1 + (startTime - initTime) / 2000) * Constants.SCREEN_HEIGHT / (10000.0f);
         for (Obstacle ob : obstacles)
-            ob.incrementY(speed * elapsedTime);
+            ob.incrementY(Rspeed = speed * elapsedTime);
         if (obstacles.get(obstacles.size() - 1).getRectangle().top >= Constants.SCREEN_HEIGHT) {
             int xStart = (int) (Math.random() * (Constants.SCREEN_WIDTH - playerGap));
             int yStart = obstacles.get(0).getRectangle().top - obstacleHeight - obstacleGap;
@@ -72,5 +74,9 @@ public class ObstacleManager {
         paint.setTextSize(100);
         paint.setColor(Color.MAGENTA);
         canvas.drawText("" + score, 50, 50 + paint.descent() - paint.ascent(), paint);
+    }
+
+    public void setPlayerGap(int gap) {
+        this.playerGap = gap;
     }
 }
