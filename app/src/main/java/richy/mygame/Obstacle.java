@@ -16,15 +16,16 @@ import android.view.View;
 
 import java.io.File;
 import java.io.FileDescriptor;
+import java.util.Random;
 
 public class Obstacle implements GameObject {
     private Rect rectangle;
     private Rect rectangle2;
     private int color;
     BitmapFactory bf = new BitmapFactory();
-    Bitmap wall = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.wall);
-    Bitmap walluse;
-    Bitmap wall2use;
+    Bitmap rock = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.rock);
+    private Bitmap Rrock = Bitmap.createScaledBitmap(rock, 100, 100, false);
+    int diff = new Random().ints(1, 0, 700).findFirst().getAsInt();
 
 
     public Rect getRectangle() {
@@ -32,6 +33,7 @@ public class Obstacle implements GameObject {
     }
 
     public void incrementY(float y) {
+
         rectangle.top+=y;
         rectangle.bottom+=y;
         rectangle2.top+=y;
@@ -42,12 +44,11 @@ public class Obstacle implements GameObject {
         BitmapFactory bf = new BitmapFactory();
         this.color = color;
         //l,t,r,b
-        rectangle = new Rect(0, startY, startX, startY + rectHeight);
+        rectangle = new Rect(startX - 100, startY, startX, startY + rectHeight);
+        diff = new Random().ints(1, 0, 700).findFirst().getAsInt();
 
-        rectangle2 = new Rect(startX + playerGap, startY, Constants.SCREEN_WIDTH, startY + rectHeight);
-        wall = wall.copy(Bitmap.Config.ARGB_8888,true);
-        walluse = Bitmap.createBitmap(wall, 0, 0, rectangle.right - rectangle.left, rectangle.bottom - rectangle.top);
-        wall2use = Bitmap.createBitmap(wall, 0, 0, rectangle2.right - rectangle2.left, rectangle2.bottom - rectangle2.top);
+        rectangle2 = new Rect(startX + playerGap, startY + diff, startX + playerGap + 100, startY + rectHeight + diff);
+
     }
 
     public boolean playerCollide(RectPlayer player) {
@@ -58,8 +59,8 @@ public class Obstacle implements GameObject {
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(color);
-        canvas.drawBitmap(walluse, rectangle.left, rectangle.top, paint);
-        canvas.drawBitmap(wall2use, rectangle2.left, rectangle2.top, paint);
+        canvas.drawBitmap(Rrock, rectangle.left, rectangle.top, paint);
+        canvas.drawBitmap(Rrock, rectangle2.left, rectangle2.top, paint);
     }
 
     @Override

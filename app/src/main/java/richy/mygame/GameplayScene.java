@@ -9,6 +9,9 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
+import java.util.Random;
+import java.util.stream.IntStream;
+
 public class GameplayScene implements Scene {
     private Rect r = new Rect();
 
@@ -19,29 +22,32 @@ public class GameplayScene implements Scene {
     private boolean movingPlayer = false;
 
     private boolean gameOver = false;
+    int gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
 
     private OrientationData orientationData;
     private long frameTime;
     Paint paint = new Paint();
     BitmapFactory bf = new BitmapFactory();
     Bitmap floor = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
+    int posx = floor.getHeight() - Constants.SCREEN_HEIGHT;
 
     public GameplayScene() {
         player = new RectPlayer(new Rect(100, 100, 200, 200), Color.rgb(255, 0, 0));
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
         player.update(playerPoint);
-
-        obstacleManager = new ObstacleManager(200, 350, 100, Color.BLACK);
+        Random r = new Random();
+        obstacleManager = new ObstacleManager(gap, 500, 100, Color.BLACK);
 
         orientationData = new OrientationData();
-        orientationData.register();;
+        orientationData.register();
         frameTime = System.currentTimeMillis();
     }
 
     public void reset() {
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
+        Random r = new Random();
         player.update(playerPoint);
-        obstacleManager = new ObstacleManager(200, 350, 100, Color.BLACK);
+        obstacleManager = new ObstacleManager(gap, 500, 100, Color.BLACK);
         movingPlayer = false;
     }
 
@@ -74,11 +80,15 @@ public class GameplayScene implements Scene {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(floor, 0, 0, paint);
+        if (posx < 6)
+            posx = floor.getHeight() - Constants.SCREEN_HEIGHT;
+        posx = posx - (int)obstacleManager.Rspeed;
+        canvas.drawBitmap(floor, 0, 0 -posx, paint);
         obstacleManager.draw(canvas);
         player.draw(canvas);
 
-
+        gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
+        obstacleManager.setPlayerGap(gap);
         if (gameOver) {
             paint.setTextSize(100);
             paint.setColor(Color.MAGENTA);
