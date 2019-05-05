@@ -1,6 +1,8 @@
 package richy.mygame;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +29,11 @@ public class MainMenuActivity extends AppCompatActivity {
         start = findViewById(R.id.start);
         options = findViewById(R.id.options);
         quit = findViewById(R.id.quit);
+
+        Constants.CURRENT_CONTEXT = this;
+
+        SharedPreferences prefs = Constants.CURRENT_CONTEXT.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+        Constants.HIGH_SCORE = prefs.getInt("key", 0);
 
         start.setOnClickListener(v -> {
             Intent intent = new Intent(MainMenuActivity.this, MainActivity.class);
