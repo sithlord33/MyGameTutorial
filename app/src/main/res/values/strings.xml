@@ -3,4 +3,5 @@
     <string name="quit">QUIT</string>
     <string name="start_game">START GAME</string>
     <string name="app_name">My Game</string>
+    <string name="reset">Reset HighScore</string>
 </resources>

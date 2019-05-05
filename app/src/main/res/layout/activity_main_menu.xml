@@ -24,16 +24,30 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/options"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:background="@mipmap/button"
+        android:text="@string/options"
+        app:layout_constraintBottom_toTopOf="@+id/start"
+        app:layout_constraintEnd_toEndOf="@+id/start"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/start"
+        app:layout_constraintTop_toBottomOf="@+id/start"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
         android:id="@+id/quit"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginTop="50dp"
         android:background="@mipmap/button"
         android:text="@string/quit"
-        app:layout_constraintBottom_toTopOf="@+id/start"
-        app:layout_constraintEnd_toEndOf="@+id/start"
+        app:layout_constraintBottom_toTopOf="@+id/options"
+        app:layout_constraintEnd_toEndOf="@+id/options"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/start"
-        app:layout_constraintTop_toBottomOf="@+id/start"
+        app:layout_constraintStart_toStartOf="@+id/options"
+        app:layout_constraintTop_toBottomOf="@+id/options"
         app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

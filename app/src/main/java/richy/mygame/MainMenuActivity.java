@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 public class MainMenuActivity extends AppCompatActivity {
-    private Button start, quit;
+    private Button start, options, quit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +25,16 @@ public class MainMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
         start = findViewById(R.id.start);
+        options = findViewById(R.id.options);
         quit = findViewById(R.id.quit);
 
         start.setOnClickListener(v -> {
             Intent intent = new Intent(MainMenuActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
+
+        options.setOnClickListener(v -> {
+            Intent intent = new Intent(MainMenuActivity.this, OptionsActivity.class);
             startActivity(intent);
         });
 
