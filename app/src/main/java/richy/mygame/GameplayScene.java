@@ -28,8 +28,10 @@ public class GameplayScene implements Scene {
     private long frameTime;
     Paint paint = new Paint();
     BitmapFactory bf = new BitmapFactory();
-    Bitmap floor = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
-    int posx = floor.getHeight() - Constants.SCREEN_HEIGHT;
+    Bitmap floor1 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
+    Bitmap floor2 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
+    int posx = floor1.getHeight() - Constants.SCREEN_HEIGHT;
+    int posx2 = posx + 1 + floor1.getHeight();
 
     public GameplayScene() {
         player = new RectPlayer(new Rect(100, 100, 200, 200), Color.rgb(255, 0, 0));
@@ -81,11 +83,15 @@ public class GameplayScene implements Scene {
     @Override
     public void draw(Canvas canvas) {
         if (!gameOver) {
-            if (posx < 6)
-                posx = floor.getHeight() - Constants.SCREEN_HEIGHT;
+            if (posx < 0 - floor1.getHeight())
+                posx = posx2 + 1 + floor1.getHeight();
+            if (posx2 < 0 - floor1.getHeight())
+                posx2 = posx + 1 + floor1.getHeight();
             posx = posx - (int) obstacleManager.Rspeed;
+            posx2 = posx2 - (int) obstacleManager.Rspeed;
         }
-        canvas.drawBitmap(floor, 0, 0 - posx, paint);
+        canvas.drawBitmap(floor1, 0, 0 - posx, paint);
+        canvas.drawBitmap(floor2,0,0 - posx2,paint);
         obstacleManager.draw(canvas);
         player.draw(canvas);
 
