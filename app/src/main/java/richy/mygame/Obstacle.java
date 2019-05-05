@@ -23,7 +23,7 @@ public class Obstacle implements GameObject {
     private Rect rectangle2;
     private int color;
     BitmapFactory bf = new BitmapFactory();
-    Bitmap rock = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.rock);
+    Bitmap rock = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.barnacle);
     private Bitmap Rrock = Bitmap.createScaledBitmap(rock, 100, 100, false);
     int diff = new Random().ints(1, 0, 700).findFirst().getAsInt();
 

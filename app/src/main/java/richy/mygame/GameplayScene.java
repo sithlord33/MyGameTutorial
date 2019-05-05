@@ -80,10 +80,12 @@ public class GameplayScene implements Scene {
 
     @Override
     public void draw(Canvas canvas) {
-        if (posx < 6)
-            posx = floor.getHeight() - Constants.SCREEN_HEIGHT;
-        posx = posx - (int)obstacleManager.Rspeed;
-        canvas.drawBitmap(floor, 0, 0 -posx, paint);
+        if (!gameOver) {
+            if (posx < 6)
+                posx = floor.getHeight() - Constants.SCREEN_HEIGHT;
+            posx = posx - (int) obstacleManager.Rspeed;
+        }
+        canvas.drawBitmap(floor, 0, 0 - posx, paint);
         obstacleManager.draw(canvas);
         player.draw(canvas);
 
@@ -91,8 +93,9 @@ public class GameplayScene implements Scene {
         obstacleManager.setPlayerGap(gap);
         if (gameOver) {
             paint.setTextSize(100);
-            paint.setColor(Color.MAGENTA);
+            paint.setColor(Color.WHITE);
             drawCenterText(canvas, paint, "Game Over");
+            drawSubText(canvas,paint, "Tap to Restart");
         }
     }
 
@@ -141,4 +144,17 @@ public class GameplayScene implements Scene {
         float y = cHeight / 2f + r.height() / 2f - r.bottom;
         canvas.drawText(text, x, y, paint);
     }
+
+    private void drawSubText(Canvas canvas, Paint paint, String text) {
+        paint.setTextSize(50);
+        paint.setTextAlign(Paint.Align.LEFT);
+        canvas.getClipBounds(r);
+        int cHeight = r.height();
+        int cWidth = r.width();
+        paint.getTextBounds(text, 0, text.length(), r);
+        float x = cWidth / 2f - r.width() / 2f - r.left;
+        float y = (cHeight / 2f + r.height() / 2f - r.bottom) + 200;
+        canvas.drawText(text, x, y, paint);
+    }
+
 }

@@ -49,6 +49,7 @@ public class RectPlayer implements GameObject {
         paint.setColor(color);
         canvas.drawRect(rectangle, paint);*/
         animManager.draw(canvas, rectangle);
+
     }
 
     @Override
@@ -59,7 +60,7 @@ public class RectPlayer implements GameObject {
     public void update(Point point) {
         float oldLeft = rectangle.left;
 
-        rectangle.set(point.x - (rectangle.width() / 2), point.y - (rectangle.height() / 2), point.x + (rectangle.width() / 2), point.y + (rectangle.height() / 2));
+        rectangle.set(point.x - rectangle.width() / 2, point.y - rectangle.height() / 2, point.x + rectangle.width() / 2, point.y + rectangle.height() / 2);
 
         int state = 0;
         if (rectangle.left - oldLeft > 5)
