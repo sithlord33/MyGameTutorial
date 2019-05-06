@@ -1,5 +1,6 @@
 package richy.mygame;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -7,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
+    private MediaPlayer mMediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +21,15 @@ public class MainActivity extends AppCompatActivity {
         Constants.SCREEN_WIDTH = dm.widthPixels;
         Constants.SCREEN_HEIGHT = dm.heightPixels;
 
+        mMediaPlayer = MediaPlayer.create(this, R.raw.surreal_chase);
+        mMediaPlayer.start();
+
         setContentView(new GamePanel(this));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMediaPlayer.stop();
     }
 }

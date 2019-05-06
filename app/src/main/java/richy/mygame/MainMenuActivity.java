@@ -3,6 +3,7 @@ package richy.mygame;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 public class MainMenuActivity extends AppCompatActivity {
-    private Button start, options, quit;
+    private MediaPlayer mMediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +27,12 @@ public class MainMenuActivity extends AppCompatActivity {
         Constants.SCREEN_HEIGHT = dm.heightPixels;
         setContentView(R.layout.activity_main_menu);
 
-        start = findViewById(R.id.start);
-        options = findViewById(R.id.options);
-        quit = findViewById(R.id.quit);
+        mMediaPlayer = MediaPlayer.create(this, R.raw.game_menu);
+        mMediaPlayer.start();
+
+        Button start = findViewById(R.id.start);
+        Button options = findViewById(R.id.options);
+        Button quit = findViewById(R.id.quit);
 
         Constants.CURRENT_CONTEXT = this;
 
@@ -38,6 +42,7 @@ public class MainMenuActivity extends AppCompatActivity {
         start.setOnClickListener(v -> {
             Intent intent = new Intent(MainMenuActivity.this, MainActivity.class);
             startActivity(intent);
+            mMediaPlayer.pause();
         });
 
         options.setOnClickListener(v -> {
@@ -56,5 +61,17 @@ public class MainMenuActivity extends AppCompatActivity {
             });
             adb.show();
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMediaPlayer.start();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMediaPlayer.start();
     }
 }

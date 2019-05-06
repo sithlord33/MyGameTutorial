@@ -17,10 +17,7 @@ public class ObstacleManager {
     private int obstacleHeight;
     private int color;
 
-    private Obstacle barnacle;
-    private Obstacle ghost;
-    private Obstacle spinner;
-    private ArrayList<Obstacle> bank;
+    private int rand;
 
     private long startTime;
     private long initTime;
@@ -34,15 +31,6 @@ public class ObstacleManager {
         this.obstacleGap = obstacleGap;
         this.obstacleHeight = obstacleHeight;
         this.color = color;
-
-        bank = new ArrayList<>();
-
-        barnacle = new Obstacle(obstacleHeight, color, 100, 100, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite);
-        ghost = new Obstacle(obstacleHeight, color, 100, 100, playerGap, R.drawable.ghost, R.drawable.ghost_normal);
-        spinner = new Obstacle(obstacleHeight, color, 100, 100, playerGap, R.drawable.spinner, R.drawable.spinner_spin);
-        bank.add(barnacle);
-        bank.add(ghost);
-        bank.add(spinner);
 
         startTime = initTime = System.currentTimeMillis();
 
@@ -65,7 +53,24 @@ public class ObstacleManager {
         int currY = -5 * Constants.SCREEN_HEIGHT / 4;
         while (currY < 0) {
             int xStart = (int) (Math.random() * (Constants.SCREEN_WIDTH - playerGap));
-            obstacles.add(new Obstacle(obstacleHeight, color, xStart, currY, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
+            rand = (int) (Math.random() * 4);
+            switch (rand) {
+                case 0:
+                    obstacles.add(new Obstacle(obstacleHeight, color, xStart, currY, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
+                    break;
+                case 1:
+                    obstacles.add(new Obstacle(obstacleHeight, color, xStart, currY, playerGap, R.drawable.ghost, R.drawable.ghost_normal));
+                    break;
+                case 2:
+                    obstacles.add(new Obstacle(obstacleHeight, color, xStart, currY, playerGap, R.drawable.spinner, R.drawable.spinner_spin));
+                    break;
+                case 3:
+                    obstacles.add(new Obstacle(obstacleHeight, color, xStart, currY, playerGap, R.drawable.snakelava, R.drawable.snakelava_ani));
+                    break;
+                default:
+                    obstacles.add(new Obstacle(obstacleHeight, color, xStart, currY, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
+            }
+            //obstacles.add(new Obstacle(obstacleHeight, color, xStart, currY, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
             currY += obstacleHeight + obstacleGap;
         }
     }
@@ -83,7 +88,25 @@ public class ObstacleManager {
         if (obstacles.get(obstacles.size() - 1).getRectangle().top >= Constants.SCREEN_HEIGHT) {
             int xStart = (int) (Math.random() * (Constants.SCREEN_WIDTH - playerGap));
             int yStart = -1 * Constants.SCREEN_HEIGHT / 4;
-            obstacles.add(0, new Obstacle(obstacleHeight, color, xStart, yStart, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
+            rand = (int) (Math.random() * 4);
+            switch (rand) {
+                case 0:
+                    obstacles.add(0, new Obstacle(obstacleHeight, color, xStart, yStart, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
+                    break;
+                case 1:
+                    obstacles.add(0, new Obstacle(obstacleHeight, color, xStart, yStart, playerGap, R.drawable.ghost, R.drawable.ghost_normal));
+                    break;
+                case 2:
+                    obstacles.add(0, new Obstacle(obstacleHeight, color, xStart, yStart, playerGap, R.drawable.spinner, R.drawable.spinner_spin));
+                    break;
+                case 3:
+                    obstacles.add(0, new Obstacle(obstacleHeight, color, xStart, yStart, playerGap, R.drawable.snakelava, R.drawable.snakelava_ani));
+                    break;
+                default:
+                    obstacles.add(0, new Obstacle(obstacleHeight, color, xStart, yStart, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
+
+            }
+            //obstacles.add(0, new Obstacle(obstacleHeight, color, xStart, yStart, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
             obstacles.remove(obstacles.size() - 1);
             score++;
         }
