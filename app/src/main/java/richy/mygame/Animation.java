@@ -11,25 +11,25 @@ public class Animation {
 
     private boolean isPlaying = false;
 
-    public boolean isPlaying() {
+    boolean isPlaying() {
         return isPlaying;
     }
 
-    public void play() {
+    void play() {
         isPlaying = true;
         frameIndex = 0;
         lastFrame = System.currentTimeMillis();
     }
 
-    public void stop() {
+    void stop() {
         isPlaying = false;
     }
 
-    public float frameTime;
+    private float frameTime;
 
     private long lastFrame;
 
-    public Animation(Bitmap[] frames, float animTime) {
+    Animation(Bitmap[] frames, float animTime) {
         this.frames = frames;
         frameIndex = 0;
 

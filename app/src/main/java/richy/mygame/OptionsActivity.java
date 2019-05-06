@@ -1,8 +1,6 @@
 package richy.mygame;
 
-import android.app.ActionBar;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,8 +11,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 public class OptionsActivity extends AppCompatActivity {
-    private Button reset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,18 +21,16 @@ public class OptionsActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_options);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        reset = findViewById(R.id.reset);
+        Button reset = findViewById(R.id.reset);
 
         reset.setOnClickListener(v -> {
             AlertDialog.Builder adb = new AlertDialog.Builder(OptionsActivity.this);
             adb.setTitle("Reset HighScore?");
             adb.setMessage("Are you sure you want to Reset the HighScore? (This can't be undone)");
             adb.setNegativeButton("Cancel", null);
-            adb.setPositiveButton("Ok", (dialog, which) -> {
-                resetHighScore();
-            });
+            adb.setPositiveButton("Ok", (dialog, which) -> resetHighScore());
             adb.show();
         });
     }
@@ -45,21 +42,19 @@ public class OptionsActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = prefs.edit();
             editor.clear().apply();
         }
-        showToast("HighScore Reset");
+        showToast();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    private void showToast() {
+        Toast.makeText(this, "HighScore Reset", Toast.LENGTH_SHORT).show();
     }
 }

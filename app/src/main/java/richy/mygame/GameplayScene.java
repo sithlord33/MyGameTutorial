@@ -10,7 +10,6 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import java.util.Random;
-import java.util.stream.IntStream;
 
 public class GameplayScene implements Scene {
     private Rect r = new Rect();
@@ -22,34 +21,31 @@ public class GameplayScene implements Scene {
     private boolean movingPlayer = false;
 
     private boolean gameOver = false;
-    int gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
+    private int gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
 
     private OrientationData orientationData;
     private long frameTime;
-    Paint paint = new Paint();
-    BitmapFactory bf = new BitmapFactory();
-    Bitmap floor1 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
-    Bitmap floor2 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
-    int posx = floor1.getHeight() - Constants.SCREEN_HEIGHT;
-    int posx2 = posx + 1 + floor1.getHeight();
+    private Paint paint = new Paint();
+    private Bitmap floor1 = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
+    private Bitmap floor2 = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
+    private int posx = floor1.getHeight() - Constants.SCREEN_HEIGHT;
+    private int posx2 = posx + 1 + floor1.getHeight();
 
-    public GameplayScene() {
-        player = new RectPlayer(new Rect(100, 100, 200, 200), Color.rgb(255, 0, 0));
+    GameplayScene() {
+        player = new RectPlayer(new Rect(100, 100, 200, 200));
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
         player.update(playerPoint);
-        Random r = new Random();
-        obstacleManager = new ObstacleManager(gap, 500, 100, Color.BLACK);
+        obstacleManager = new ObstacleManager(gap, 300, 100);
 
         orientationData = new OrientationData();
         orientationData.register();
         frameTime = System.currentTimeMillis();
     }
 
-    public void reset() {
+    private void reset() {
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
-        Random r = new Random();
         player.update(playerPoint);
-        obstacleManager = new ObstacleManager(gap, 500, 100, Color.BLACK);
+        obstacleManager = new ObstacleManager(gap, 300, 100);
         movingPlayer = false;
     }
 
@@ -100,8 +96,8 @@ public class GameplayScene implements Scene {
         if (gameOver) {
             paint.setTextSize(100);
             paint.setColor(Color.WHITE);
-            drawCenterText(canvas, paint, "Game Over");
-            drawSubText(canvas,paint, "Tap to Restart");
+            drawCenterText(canvas, paint);
+            drawSubText(canvas,paint);
         }
     }
 
@@ -140,27 +136,27 @@ public class GameplayScene implements Scene {
         }
     }
 
-    private void drawCenterText(Canvas canvas, Paint paint, String text) {
+    private void drawCenterText(Canvas canvas, Paint paint) {
         paint.setTextAlign(Paint.Align.LEFT);
         canvas.getClipBounds(r);
         int cHeight = r.height();
         int cWidth = r.width();
-        paint.getTextBounds(text, 0, text.length(), r);
+        paint.getTextBounds("Game Over", 0, "Game Over".length(), r);
         float x = cWidth / 2f - r.width() / 2f - r.left;
         float y = cHeight / 2f + r.height() / 2f - r.bottom;
-        canvas.drawText(text, x, y, paint);
+        canvas.drawText("Game Over", x, y, paint);
     }
 
-    private void drawSubText(Canvas canvas, Paint paint, String text) {
+    private void drawSubText(Canvas canvas, Paint paint) {
         paint.setTextSize(50);
         paint.setTextAlign(Paint.Align.LEFT);
         canvas.getClipBounds(r);
         int cHeight = r.height();
         int cWidth = r.width();
-        paint.getTextBounds(text, 0, text.length(), r);
+        paint.getTextBounds("Tap to Restart", 0, "Tap to Restart".length(), r);
         float x = cWidth / 2f - r.width() / 2f - r.left;
         float y = (cHeight / 2f + r.height() / 2f - r.bottom) + 200;
-        canvas.drawText(text, x, y, paint);
+        canvas.drawText("Tap to Restart", x, y, paint);
     }
 
 }

@@ -10,35 +10,29 @@ import android.graphics.Rect;
 public class RectPlayer implements GameObject {
 
     private Rect rectangle;
-    private int color;
 
-    private Animation idle;
-    private Animation walkRight;
-    private Animation walkLeft;
     private AnimationManager animManager;
 
-    public Rect getRectangle() {
+    Rect getRectangle() {
         return rectangle;
     }
 
-    public RectPlayer(Rect rectangle, int color) {
+    RectPlayer(Rect rectangle) {
         this.rectangle = rectangle;
-        this.color = color;
 
-        BitmapFactory bf = new BitmapFactory();
-        Bitmap idleImg = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.standing);
-        Bitmap walk1 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.walk_right);
-        Bitmap walk2 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.standing_right);
+        Bitmap idleImg = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.standing);
+        Bitmap walk1 = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.walk_right);
+        Bitmap walk2 = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.standing_right);
 
-        idle = new Animation(new Bitmap[]{idleImg}, 1);
-        walkRight = new Animation((new Bitmap[]{walk1, walk2}), 0.5f);
+        Animation idle = new Animation(new Bitmap[]{idleImg}, 1);
+        Animation walkRight = new Animation((new Bitmap[]{walk1, walk2}), 0.5f);
 
         Matrix m = new Matrix();
         m.preScale(-1, 1);
         walk1 = Bitmap.createBitmap(walk1, 0, 0, walk1.getWidth(), walk1.getHeight(), m, false);
         walk2 = Bitmap.createBitmap(walk2, 0, 0, walk2.getWidth(), walk2.getHeight(), m, false);
 
-        walkLeft = new Animation((new Bitmap[]{walk1, walk2}), 0.5f);
+        Animation walkLeft = new Animation((new Bitmap[]{walk1, walk2}), 0.5f);
 
         animManager = new AnimationManager(new Animation[]{idle, walkRight, walkLeft});
     }

@@ -3,12 +3,12 @@ package richy.mygame;
 import android.content.Context;
 
 public class Constants {
-    public static int SCREEN_WIDTH;
-    public static int SCREEN_HEIGHT;
+    static int SCREEN_WIDTH;
+    static int SCREEN_HEIGHT;
 
-    public static Context CURRENT_CONTEXT;
+    static Context CURRENT_CONTEXT;
 
-    public static long INIT_TIME;
+    static long INIT_TIME;
 
-    public static int HIGH_SCORE;
+    static int HIGH_SCORE;
 }

@@ -3,7 +3,6 @@ package richy.mygame;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 
 import java.util.Random;
@@ -38,7 +37,7 @@ public class Obstacle implements GameObject {
         rectangle3.bottom += y;
     }
 
-    Obstacle(int rectHeight, int color, int startX, int startY, int playerGap, int walk1, int walk2) {
+    Obstacle(int rectHeight, int startX, int startY, int playerGap, int walk1, int walk2) {
         //l,t,r,b
         rectangle = new Rect(startX - 100, startY, startX, startY + rectHeight);
 
