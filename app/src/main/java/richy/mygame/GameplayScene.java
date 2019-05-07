@@ -8,50 +8,44 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import java.util.Random;
-import java.util.stream.IntStream;
 
 public class GameplayScene implements Scene {
     private Rect r = new Rect();
 
     private RectPlayer player;
     private Point playerPoint;
-    private ObstacleManager obstacleManager;
+    private EnemyManager enemyManager;
 
     private boolean movingPlayer = false;
 
     private boolean gameOver = false;
-    int gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
+    private int gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
 
     private OrientationData orientationData;
     private long frameTime;
-    Paint paint = new Paint();
-    BitmapFactory bf = new BitmapFactory();
-    Bitmap floor1 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
-    Bitmap floor2 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
-    Bitmap target = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.target);
-    int posx = floor1.getHeight() - Constants.SCREEN_HEIGHT;
-    int posx2 = posx + 1 + floor1.getHeight();
+    private Paint paint = new Paint();
+    private Bitmap floor1 = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
+    private Bitmap floor2 = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
+    private int posx = floor1.getHeight() - Constants.SCREEN_HEIGHT;
+    private int posx2 = posx + 1 + floor1.getHeight();
 
-    public GameplayScene() {
+    GameplayScene() {
         player = new RectPlayer(new Rect(100, 100, 200, 200));
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
         player.update(playerPoint);
-        Random r = new Random();
-        obstacleManager = new ObstacleManager(gap, 500, 100);
+        enemyManager = new EnemyManager(gap, 300, 100);
 
         orientationData = new OrientationData();
         orientationData.register();
         frameTime = System.currentTimeMillis();
     }
 
-    public void reset() {
+    private void reset() {
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
-        Random r = new Random();
         player.update(playerPoint);
-        obstacleManager = new ObstacleManager(gap, 500, 100);
+        enemyManager = new EnemyManager(gap, 300, 100);
         movingPlayer = false;
     }
 
@@ -73,24 +67,13 @@ public class GameplayScene implements Scene {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (!gameOver)
+                if (movingPlayer && !gameOver)
+                    playerPoint.set((int) event.getX(), (int) event.getY());
                 break;
             case MotionEvent.ACTION_UP:
                 movingPlayer = false;
-                if(event.getY() < Constants.SCREEN_HEIGHT/2 + Constants.SCREEN_HEIGHT/4) {
-                    player.setSword(true);
-                    showToast("sword");
-                }
-                if(event.getY() > Constants.SCREEN_HEIGHT/2 + Constants.SCREEN_HEIGHT/4) {
-                    showToast("shield");
-                    player.setShield(true);
-                }
                 break;
         }
-    }
-
-    private void showToast(String string){
-        Toast.makeText(Constants.CURRENT_CONTEXT, string, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -100,22 +83,21 @@ public class GameplayScene implements Scene {
                 posx = posx2 + 1 + floor1.getHeight();
             if (posx2 < 0 - floor1.getHeight())
                 posx2 = posx + 1 + floor1.getHeight();
-            posx = posx - (int) obstacleManager.Rspeed;
-            posx2 = posx2 - (int) obstacleManager.Rspeed;
+            posx = posx - (int) enemyManager.Rspeed;
+            posx2 = posx2 - (int) enemyManager.Rspeed;
         }
         canvas.drawBitmap(floor1, 0, 0 - posx, paint);
         canvas.drawBitmap(floor2,0,0 - posx2,paint);
-        obstacleManager.draw(canvas);
+        enemyManager.draw(canvas);
         player.draw(canvas);
-        canvas.drawBitmap(target,(Constants.SCREEN_WIDTH/2) - (target.getWidth()/2), Constants.SCREEN_HEIGHT/2 + Constants.SCREEN_HEIGHT/4,paint );
 
         gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
-        obstacleManager.setPlayerGap(gap);
+        enemyManager.setPlayerGap(gap);
         if (gameOver) {
             paint.setTextSize(100);
             paint.setColor(Color.WHITE);
-            drawCenterText(canvas, paint, "Game Over");
-            drawSubText(canvas,paint, "Tap to Restart");
+            drawCenterText(canvas, paint);
+            drawSubText(canvas,paint);
         }
     }
 
@@ -133,8 +115,8 @@ public class GameplayScene implements Scene {
                 float xSpeed = 2 * roll * Constants.SCREEN_WIDTH / 1000f;
                 float ySpeed = pitch * Constants.SCREEN_HEIGHT / 1000f;
 
-                playerPoint.x += (Math.abs(xSpeed * elapsedTime) > 5 ? xSpeed * elapsedTime : 0)/4;
-                playerPoint.y -= (Math.abs(ySpeed * elapsedTime) > 5 ? ySpeed * elapsedTime : 0)/4;
+                playerPoint.x += Math.abs(xSpeed * elapsedTime) > 5 ? xSpeed * elapsedTime : 0;
+                playerPoint.y -= Math.abs(ySpeed * elapsedTime) > 5 ? ySpeed * elapsedTime : 0;
             }
 
             if (playerPoint.x < 0)
@@ -147,37 +129,34 @@ public class GameplayScene implements Scene {
                 playerPoint.y = Constants.SCREEN_HEIGHT;
 
             player.update(playerPoint);
-            obstacleManager.update();
+            enemyManager.update();
 
-            if (obstacleManager.playerCollide(player))
-                if(player.Shield || player.Sword)
-                    gameOver = false;
-                else
-                    gameOver = true;
+            if (enemyManager.playerCollide(player))
+                gameOver = true;
         }
     }
 
-    private void drawCenterText(Canvas canvas, Paint paint, String text) {
+    private void drawCenterText(Canvas canvas, Paint paint) {
         paint.setTextAlign(Paint.Align.LEFT);
         canvas.getClipBounds(r);
         int cHeight = r.height();
         int cWidth = r.width();
-        paint.getTextBounds(text, 0, text.length(), r);
+        paint.getTextBounds("Game Over", 0, "Game Over".length(), r);
         float x = cWidth / 2f - r.width() / 2f - r.left;
         float y = cHeight / 2f + r.height() / 2f - r.bottom;
-        canvas.drawText(text, x, y, paint);
+        canvas.drawText("Game Over", x, y, paint);
     }
 
-    private void drawSubText(Canvas canvas, Paint paint, String text) {
+    private void drawSubText(Canvas canvas, Paint paint) {
         paint.setTextSize(50);
         paint.setTextAlign(Paint.Align.LEFT);
         canvas.getClipBounds(r);
         int cHeight = r.height();
         int cWidth = r.width();
-        paint.getTextBounds(text, 0, text.length(), r);
+        paint.getTextBounds("Tap to Restart", 0, "Tap to Restart".length(), r);
         float x = cWidth / 2f - r.width() / 2f - r.left;
         float y = (cHeight / 2f + r.height() / 2f - r.bottom) + 200;
-        canvas.drawText(text, x, y, paint);
+        canvas.drawText("Tap to Restart", x, y, paint);
     }
 
 }
