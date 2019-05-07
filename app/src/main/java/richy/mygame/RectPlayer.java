@@ -97,6 +97,7 @@ public class RectPlayer implements GameObject {
             try {
                 this.join(1500);
                 Sword = false;
+                Shield = false;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
