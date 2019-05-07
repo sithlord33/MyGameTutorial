@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -16,7 +17,8 @@ public class GameplayScene implements Scene {
 
     private RectPlayer player;
     private Point playerPoint;
-    private EnemyManager enemyManager;
+    private ObstacleManager obstacleManager;
+    private PowerupManager powerupManager;
 
     private boolean movingPlayer = false;
 
@@ -35,7 +37,8 @@ public class GameplayScene implements Scene {
         player = new RectPlayer(new Rect(100, 100, 200, 200));
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
         player.update(playerPoint);
-        enemyManager = new EnemyManager(gap, 300, 100);
+        obstacleManager = new ObstacleManager(gap, 300, 100);
+        powerupManager = new PowerupManager(gap, 100000000, 50);
 
         orientationData = new OrientationData();
         orientationData.register();
@@ -45,7 +48,8 @@ public class GameplayScene implements Scene {
     private void reset() {
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
         player.update(playerPoint);
-        enemyManager = new EnemyManager(gap, 300, 100);
+        obstacleManager = new ObstacleManager(gap, 300, 100);
+        powerupManager = new PowerupManager(gap, 100000000, 50);
         movingPlayer = false;
     }
 
@@ -83,21 +87,22 @@ public class GameplayScene implements Scene {
                 posx = posx2 + 1 + floor1.getHeight();
             if (posx2 < 0 - floor1.getHeight())
                 posx2 = posx + 1 + floor1.getHeight();
-            posx = posx - (int) enemyManager.Rspeed;
-            posx2 = posx2 - (int) enemyManager.Rspeed;
+            posx = posx - (int) obstacleManager.Rspeed;
+            posx2 = posx2 - (int) obstacleManager.Rspeed;
         }
         canvas.drawBitmap(floor1, 0, 0 - posx, paint);
-        canvas.drawBitmap(floor2,0,0 - posx2,paint);
-        enemyManager.draw(canvas);
+        canvas.drawBitmap(floor2, 0, 0 - posx2, paint);
+        obstacleManager.draw(canvas);
+        powerupManager.draw(canvas);
         player.draw(canvas);
 
         gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
-        enemyManager.setPlayerGap(gap);
+        obstacleManager.setPlayerGap(gap);
         if (gameOver) {
             paint.setTextSize(100);
             paint.setColor(Color.WHITE);
             drawCenterText(canvas, paint);
-            drawSubText(canvas,paint);
+            drawSubText(canvas, paint);
         }
     }
 
@@ -128,11 +133,17 @@ public class GameplayScene implements Scene {
             else if (playerPoint.y > Constants.SCREEN_HEIGHT)
                 playerPoint.y = Constants.SCREEN_HEIGHT;
 
+            powerupManager.update();
             player.update(playerPoint);
-            enemyManager.update();
+            obstacleManager.update();
 
-            if (enemyManager.playerCollide(player))
+            if (obstacleManager.playerCollide(player)) {
                 gameOver = true;
+            }
+
+            if (powerupManager.playerGrab(player)) {
+
+            }
         }
     }
 
@@ -159,4 +170,7 @@ public class GameplayScene implements Scene {
         canvas.drawText("Tap to Restart", x, y, paint);
     }
 
+    private void showToast(String msg) {
+        Toast.makeText(Constants.CURRENT_CONTEXT, msg, Toast.LENGTH_SHORT).show();
+    }
 }

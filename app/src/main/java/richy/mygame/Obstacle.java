@@ -20,7 +20,6 @@ public class Enemy implements GameObject {
     }
 
     void incrementY(float y) {
-
         rectangle.top += y;
         rectangle.bottom += y;
         rectangle2.top += y;
@@ -63,10 +62,6 @@ public class Enemy implements GameObject {
         animManager.draw(canvas, rectangle);
         animManager.draw(canvas, rectangle2);
         animManager.draw(canvas, rectangle3);
-        //Paint paint = new Paint();
-        //paint.setColor(color);
-        //canvas.drawBitmap(Bbarnacle, rectangle.left, rectangle.top, paint);
-        //canvas.drawBitmap(Bbarnacle, rectangle2.left, rectangle2.top, paint);
     }
 
     @Override
