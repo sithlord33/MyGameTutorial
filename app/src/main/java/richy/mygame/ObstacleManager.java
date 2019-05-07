@@ -21,8 +21,10 @@ public class ObstacleManager {
     private long initTime;
 
     private int score = 0;
+    boolean generate = true;
 
     float Rspeed = 0;
+    MyThread thread = new MyThread();
 
     ObstacleManager(int playerGap, int obstacleGap, int obstacleHeight) {
         this.playerGap = playerGap;
@@ -33,6 +35,7 @@ public class ObstacleManager {
 
         obstacles = new ArrayList<>();
 
+        thread.start();
         populateObstacles();
 
         SharedPreferences prefs = Constants.CURRENT_CONTEXT.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
@@ -136,5 +139,19 @@ public class ObstacleManager {
 
     void setPlayerGap(int gap) {
         this.playerGap = gap;
+    }
+    public class MyThread extends Thread {
+        @Override
+        public void run() {
+            while (generate) {
+                try {
+                    this.join(1500);
+                    populateObstacles();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            this.interrupt();
+        }
     }
 }

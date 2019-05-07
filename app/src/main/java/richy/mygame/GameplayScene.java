@@ -42,6 +42,7 @@ public class GameplayScene implements Scene {
         Random r = new Random();
         obstacleManager = new ObstacleManager(gap, 500, 100);
 
+
         orientationData = new OrientationData();
         orientationData.register();
         frameTime = System.currentTimeMillis();
@@ -53,6 +54,7 @@ public class GameplayScene implements Scene {
         player.update(playerPoint);
         obstacleManager = new ObstacleManager(gap, 500, 100);
         movingPlayer = false;
+        obstacleManager.generate = true;
     }
 
     @Override
@@ -83,7 +85,6 @@ public class GameplayScene implements Scene {
                 }
                 if(event.getY() > Constants.SCREEN_HEIGHT/2 + Constants.SCREEN_HEIGHT/4) {
                     showToast("shield");
-                    player.setShield(true);
                 }
                 break;
         }
@@ -112,6 +113,7 @@ public class GameplayScene implements Scene {
         gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
         obstacleManager.setPlayerGap(gap);
         if (gameOver) {
+            obstacleManager.generate = false;
             paint.setTextSize(100);
             paint.setColor(Color.WHITE);
             drawCenterText(canvas, paint, "Game Over");
@@ -133,8 +135,8 @@ public class GameplayScene implements Scene {
                 float xSpeed = 2 * roll * Constants.SCREEN_WIDTH / 1000f;
                 float ySpeed = pitch * Constants.SCREEN_HEIGHT / 1000f;
 
-                playerPoint.x += (Math.abs(xSpeed * elapsedTime) > 5 ? xSpeed * elapsedTime : 0)/4;
-                playerPoint.y -= (Math.abs(ySpeed * elapsedTime) > 5 ? ySpeed * elapsedTime : 0)/4;
+                playerPoint.x += (Math.abs(xSpeed * elapsedTime) > 5 ? xSpeed * elapsedTime : 0)/2;
+                playerPoint.y -= (Math.abs(ySpeed * elapsedTime) > 5 ? ySpeed * elapsedTime : 0)/2;
             }
 
             if (playerPoint.x < 0)
@@ -152,8 +154,10 @@ public class GameplayScene implements Scene {
             if (obstacleManager.playerCollide(player))
                 if(player.Shield || player.Sword)
                     gameOver = false;
-                else
+                else {
                     gameOver = true;
+                    obstacleManager.generate = false;
+                }
         }
     }
 
