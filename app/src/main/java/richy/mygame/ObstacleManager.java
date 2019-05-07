@@ -8,9 +8,9 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 
-public class EnemyManager {
+public class ObstacleManager {
     //higher index = lower on screen = higher y value
-    private ArrayList<Enemy> enemies;
+    private ArrayList<Obstacle> obstacles;
     private int playerGap;
     private int obstacleGap;
     private int obstacleHeight;
@@ -21,18 +21,21 @@ public class EnemyManager {
     private long initTime;
 
     private int score = 0;
+    boolean generate = true;
 
     float Rspeed = 0;
+    MyThread thread = new MyThread();
 
-    EnemyManager(int playerGap, int obstacleGap, int obstacleHeight) {
+    ObstacleManager(int playerGap, int obstacleGap, int obstacleHeight) {
         this.playerGap = playerGap;
         this.obstacleGap = obstacleGap;
         this.obstacleHeight = obstacleHeight;
 
         startTime = initTime = System.currentTimeMillis();
 
-        enemies = new ArrayList<>();
+        obstacles = new ArrayList<>();
 
+        thread.start();
         populateObstacles();
 
         SharedPreferences prefs = Constants.CURRENT_CONTEXT.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
@@ -40,9 +43,14 @@ public class EnemyManager {
     }
 
     boolean playerCollide(RectPlayer player) {
-        for (Enemy ob : enemies)
-            if (ob.playerCollide(player))
+        for (Obstacle ob : obstacles)
+            if (ob.playerCollide(player)) {
+                if (player.getSword()) {
+                    ob.kill();
+                    return false;
+                }
                 return true;
+            }
         return false;
     }
 
@@ -53,21 +61,20 @@ public class EnemyManager {
             rand = (int) (Math.random() * 4);
             switch (rand) {
                 case 0:
-                    enemies.add(new Enemy(obstacleHeight, xStart, currY, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
+                    obstacles.add(new Obstacle(obstacleHeight, xStart, currY, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
                     break;
                 case 1:
-                    enemies.add(new Enemy(obstacleHeight, xStart, currY, playerGap, R.drawable.ghost, R.drawable.ghost_normal));
+                    obstacles.add(new Obstacle(obstacleHeight, xStart, currY, playerGap, R.drawable.ghost, R.drawable.ghost_normal));
                     break;
                 case 2:
-                    enemies.add(new Enemy(obstacleHeight, xStart, currY, playerGap, R.drawable.spinner, R.drawable.spinner_spin));
+                    obstacles.add(new Obstacle(obstacleHeight, xStart, currY, playerGap, R.drawable.spinner, R.drawable.spinner_spin));
                     break;
                 case 3:
-                    enemies.add(new Enemy(obstacleHeight, xStart, currY, playerGap, R.drawable.snakelava, R.drawable.snakelava_ani));
+                    obstacles.add(new Obstacle(obstacleHeight, xStart, currY, playerGap, R.drawable.snakelava, R.drawable.snakelava_ani));
                     break;
                 default:
-                    enemies.add(new Enemy(obstacleHeight, xStart, currY, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
+                    obstacles.add(new Obstacle(obstacleHeight, xStart, currY, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
             }
-            //enemies.add(new Enemy(obstacleHeight, color, xStart, currY, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
             currY += obstacleHeight + obstacleGap;
         }
     }
@@ -78,39 +85,38 @@ public class EnemyManager {
         int elapsedTime = (int) (System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
         float speed = (float) Math.sqrt(1 + (startTime - initTime) / 2000) * Constants.SCREEN_HEIGHT / (10000.0f);
-        for (Enemy ob : enemies) {
+        for (Obstacle ob : obstacles) {
             ob.incrementY(Rspeed = speed * elapsedTime);
             ob.update();
         }
-        if (enemies.get(enemies.size() - 1).getRectangle().top >= Constants.SCREEN_HEIGHT) {
+        if (obstacles.get(obstacles.size() - 1).getRectangle().top >= Constants.SCREEN_HEIGHT) {
             int xStart = (int) (Math.random() * (Constants.SCREEN_WIDTH - playerGap));
-            int yStart = -1 * Constants.SCREEN_HEIGHT / 2;
+            int yStart = -1 * Constants.SCREEN_HEIGHT / 4;
             rand = (int) (Math.random() * 4);
             switch (rand) {
                 case 0:
-                    enemies.add(0, new Enemy(obstacleHeight, xStart, yStart, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
+                    obstacles.add(0, new Obstacle(obstacleHeight, xStart, yStart, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
                     break;
                 case 1:
-                    enemies.add(0, new Enemy(obstacleHeight, xStart, yStart, playerGap, R.drawable.ghost, R.drawable.ghost_normal));
+                    obstacles.add(0, new Obstacle(obstacleHeight, xStart, yStart, playerGap, R.drawable.ghost, R.drawable.ghost_normal));
                     break;
                 case 2:
-                    enemies.add(0, new Enemy(obstacleHeight, xStart, yStart, playerGap, R.drawable.spinner, R.drawable.spinner_spin));
+                    obstacles.add(0, new Obstacle(obstacleHeight, xStart, yStart, playerGap, R.drawable.spinner, R.drawable.spinner_spin));
                     break;
                 case 3:
-                    enemies.add(0, new Enemy(obstacleHeight, xStart, yStart, playerGap, R.drawable.snakelava, R.drawable.snakelava_ani));
+                    obstacles.add(0, new Obstacle(obstacleHeight, xStart, yStart, playerGap, R.drawable.snakelava, R.drawable.snakelava_ani));
                     break;
                 default:
-                    enemies.add(0, new Enemy(obstacleHeight, xStart, yStart, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
+                    obstacles.add(0, new Obstacle(obstacleHeight, xStart, yStart, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
 
             }
-            //enemies.add(0, new Enemy(obstacleHeight, color, xStart, yStart, playerGap, R.drawable.barnacle, R.drawable.barnacle_bite));
-            enemies.remove(enemies.size() - 1);
+            obstacles.remove(obstacles.size() - 1);
             score++;
         }
     }
 
     public void draw(Canvas canvas) {
-        for (Enemy ob : enemies)
+        for (Obstacle ob : obstacles)
             ob.draw(canvas);
         Paint paint = new Paint();
         paint.setTextSize(75);
@@ -131,5 +137,19 @@ public class EnemyManager {
 
     void setPlayerGap(int gap) {
         this.playerGap = gap;
+    }
+    public class MyThread extends Thread {
+        @Override
+        public void run() {
+            while (generate) {
+                try {
+                    this.join(3000);
+                    update();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            this.interrupt();
+        }
     }
 }

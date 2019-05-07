@@ -103,6 +103,7 @@ public class GameplayScene implements Scene {
             paint.setColor(Color.WHITE);
             drawCenterText(canvas, paint);
             drawSubText(canvas, paint);
+            obstacleManager.thread.interrupt();
         }
     }
 
@@ -142,7 +143,7 @@ public class GameplayScene implements Scene {
             }
 
             if (powerupManager.playerGrab(player)) {
-
+                showToast("SHIELD");
             }
         }
     }
