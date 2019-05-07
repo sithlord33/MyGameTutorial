@@ -139,11 +139,12 @@ public class GameplayScene implements Scene {
             obstacleManager.update();
 
             if (obstacleManager.playerCollide(player)) {
-                gameOver = true;
+                if (!player.getSword())
+                    gameOver = true;
             }
 
             if (powerupManager.playerGrab(player)) {
-                showToast("SHIELD");
+                player.setSword();
             }
         }
     }

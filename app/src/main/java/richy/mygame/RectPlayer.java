@@ -16,6 +16,8 @@ public class RectPlayer implements GameObject {
     private boolean sword;
     private boolean shield;
 
+    private MyThread thread;
+
     void setSword() {
         sword = !sword;
     }
@@ -75,7 +77,11 @@ public class RectPlayer implements GameObject {
 
         rectangle.set(point.x - rectangle.width() / 2, point.y - rectangle.height() / 2, point.x + rectangle.width() / 2, point.y + rectangle.height() / 2);
 
+        thread = new MyThread();
+
         int state = 0;
+        if (getSword())
+            thread.start();
         if (rectangle.left - oldLeft > 5)
             state = 1;
         else if (rectangle.left - oldLeft < -5)
@@ -83,5 +89,17 @@ public class RectPlayer implements GameObject {
 
         animManager.playAnim(state);
         animManager.update();
+    }
+
+    public class MyThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                this.join(1500);
+                setSword();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
