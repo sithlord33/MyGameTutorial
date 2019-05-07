@@ -60,6 +60,11 @@ public class Obstacle implements GameObject {
         return Rect.intersects(rectangle, player.getRectangle()) || Rect.intersects(rectangle2, player.getRectangle()) || Rect.intersects(rectangle3, player.getRectangle());
     }
 
+    void kill() {
+        rectangle = new Rect(Constants.SCREEN_HEIGHT + 20, Constants.SCREEN_HEIGHT + 20, Constants.SCREEN_HEIGHT + 20, Constants.SCREEN_HEIGHT + 200);
+
+    }
+
     @Override
     public void draw(Canvas canvas) {
         animManager.draw(canvas, rectangle);

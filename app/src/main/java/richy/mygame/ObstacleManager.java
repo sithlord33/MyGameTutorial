@@ -41,8 +41,13 @@ public class ObstacleManager {
 
     boolean playerCollide(RectPlayer player) {
         for (Obstacle ob : obstacles)
-            if (ob.playerCollide(player))
+            if (ob.playerCollide(player)) {
+                if (player.Sword || player.Shield) {
+                    ob.kill();
+                    return false;
+                }
                 return true;
+            }
         return false;
     }
 
