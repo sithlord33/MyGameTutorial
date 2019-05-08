@@ -19,6 +19,8 @@ public class GameplayScene implements Scene {
     private RectPlayer player;
     private Point playerPoint;
     private ObstacleManager obstacleManager;
+    private PowerupManager powerupManager;
+
 
     private boolean movingPlayer = false;
 
@@ -31,7 +33,6 @@ public class GameplayScene implements Scene {
     BitmapFactory bf = new BitmapFactory();
     Bitmap floor1 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
     Bitmap floor2 = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.floor);
-    Bitmap target = bf.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.target);
     int posx = floor1.getHeight() - Constants.SCREEN_HEIGHT;
     int posx2 = posx + 1 + floor1.getHeight();
 
@@ -41,6 +42,7 @@ public class GameplayScene implements Scene {
         player.update(playerPoint);
         Random r = new Random();
         obstacleManager = new ObstacleManager(gap, 500, 100);
+        powerupManager = new PowerupManager(gap, 100000000, 50);
 
 
         orientationData = new OrientationData();
@@ -52,7 +54,9 @@ public class GameplayScene implements Scene {
         playerPoint = new Point(Constants.SCREEN_WIDTH / 2, 3 * Constants.SCREEN_HEIGHT / 4);
         Random r = new Random();
         player.update(playerPoint);
+        player.powerup = 0;
         obstacleManager = new ObstacleManager(gap, 500, 100);
+        powerupManager = new PowerupManager(gap, 100000000, 50);
         movingPlayer = false;
         obstacleManager.generate = true;
     }
@@ -78,20 +82,13 @@ public class GameplayScene implements Scene {
                 if (!gameOver)
                 break;
             case MotionEvent.ACTION_UP:
-                movingPlayer = false;
-                if(event.getY() < Constants.SCREEN_HEIGHT/2 + Constants.SCREEN_HEIGHT/4) {
+                if(player.powerup > 0) {
+                    movingPlayer = false;
+                    player.powerup--;
                     player.setSword(true);
-                    showToast("sword");
-                }
-                if(event.getY() > Constants.SCREEN_HEIGHT/2 + Constants.SCREEN_HEIGHT/4) {
-                    showToast("shield");
                 }
                 break;
         }
-    }
-
-    private void showToast(String string){
-        Toast.makeText(Constants.CURRENT_CONTEXT, string, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -106,10 +103,9 @@ public class GameplayScene implements Scene {
         }
         canvas.drawBitmap(floor1, 0, 0 - posx, paint);
         canvas.drawBitmap(floor2,0,0 - posx2,paint);
+        powerupManager.draw(canvas);
         obstacleManager.draw(canvas);
         player.draw(canvas);
-        canvas.drawBitmap(target,(Constants.SCREEN_WIDTH/2) - (target.getWidth()/2), Constants.SCREEN_HEIGHT/2 + Constants.SCREEN_HEIGHT/4,paint );
-
         gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
         obstacleManager.setPlayerGap(gap);
         if (gameOver) {
@@ -148,16 +144,19 @@ public class GameplayScene implements Scene {
             else if (playerPoint.y > Constants.SCREEN_HEIGHT)
                 playerPoint.y = Constants.SCREEN_HEIGHT;
 
+            powerupManager.update();
             player.update(playerPoint);
             obstacleManager.update();
 
-            if (obstacleManager.playerCollide(player))
-                if(player.Shield || player.Sword)
-                    gameOver = false;
-                else {
+            if (obstacleManager.playerCollide(player)) {
+                if (!player.getSword())
                     gameOver = true;
-                    obstacleManager.generate = false;
-                }
+            }
+
+            if (powerupManager.playerGrab(player)) {
+                player.powerup++;
+                player.setSword(true);
+            }
         }
     }
 

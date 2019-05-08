@@ -37,6 +37,7 @@ public class ObstacleManager {
 
         thread.start();
         populateObstacles();
+        populateObstacles();
 
         SharedPreferences prefs = Constants.CURRENT_CONTEXT.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
         Constants.HIGH_SCORE = prefs.getInt("key", 0);
@@ -146,7 +147,7 @@ public class ObstacleManager {
             while (generate) {
                 try {
                     this.join(1500);
-                    populateObstacles();
+                    update();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

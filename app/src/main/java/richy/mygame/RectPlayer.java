@@ -9,6 +9,7 @@ import android.graphics.Rect;
 
 public class RectPlayer implements GameObject {
 
+    public int powerup = 0;
     private Rect rectangle;
 
     private AnimationManager animManager;
@@ -89,6 +90,10 @@ public class RectPlayer implements GameObject {
 
     public void setSword(boolean b) {
         this.Sword = b;
+    }
+
+    public boolean getSword() {
+        return Sword;
     }
 
     public class MyThread extends Thread {
