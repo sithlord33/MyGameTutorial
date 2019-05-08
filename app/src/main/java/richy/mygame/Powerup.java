@@ -11,7 +11,10 @@ public class Powerup implements GameObject {
     private Rect rectangle;
     private Bitmap rType;
     private String color;
-    MyThread thread = new MyThread();
+    private int height = Constants.SCREEN_HEIGHT;
+    boolean grabable = true;
+    private Bitmap gray  = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), R.drawable.grayorb);
+    Bitmap grayOrb = Bitmap.createScaledBitmap(gray, 100, 100, false);
 
     Rect getRectangle() {
         return rectangle;
@@ -51,13 +54,7 @@ public class Powerup implements GameObject {
     }
 
     public void remove() {
-        thread.start();
-    }
-
-    public class MyThread extends Thread {
-        @Override
-        public void run() {
-            rectangle = new Rect(Constants.SCREEN_HEIGHT, Constants.SCREEN_HEIGHT, Constants.SCREEN_HEIGHT, Constants.SCREEN_HEIGHT);
-        }
+        rType = grayOrb;
+        grabable = false;
     }
 }

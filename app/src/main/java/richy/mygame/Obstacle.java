@@ -35,6 +35,7 @@ public class Obstacle implements GameObject {
     Obstacle(int rectHeight, int startX, int startY, int playerGap, int walk1, int walk2) {
         //l,t,r,b
         startX= new Random().ints(1, 0, Constants.SCREEN_WIDTH).findFirst().getAsInt();
+        startY += new Random().ints(1, 0, 700).findFirst().getAsInt();
         rectangle = new Rect(startX - 100, startY, startX, startY + rectHeight);
 
         Bitmap bWalk1 = BitmapFactory.decodeResource(Constants.CURRENT_CONTEXT.getResources(), walk1);

@@ -34,15 +34,11 @@ public class PowerupManager {
 
     boolean playerGrab(RectPlayer player) {
         for (Powerup pu : powerups)
-            if (pu.playerGrab(player)) {
+            if (pu.playerGrab(player) && pu.grabable) {
                 pu.remove();
                 return true;
             }
         return false;
-    }
-
-    private void showToast(String string){
-        Toast.makeText(Constants.CURRENT_CONTEXT, string, Toast.LENGTH_SHORT).show();
     }
 
     private void populatePowerups() {

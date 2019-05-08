@@ -103,8 +103,8 @@ public class GameplayScene implements Scene {
         }
         canvas.drawBitmap(floor1, 0, 0 - posx, paint);
         canvas.drawBitmap(floor2,0,0 - posx2,paint);
-        powerupManager.draw(canvas);
         obstacleManager.draw(canvas);
+        powerupManager.draw(canvas);
         player.draw(canvas);
         gap = new Random().ints(1, 100, Constants.SCREEN_WIDTH - 100).findFirst().getAsInt();
         obstacleManager.setPlayerGap(gap);

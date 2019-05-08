@@ -74,4 +74,16 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onResume();
         mMediaPlayer.start();
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMediaPlayer.stop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMediaPlayer.stop();
+    }
 }
