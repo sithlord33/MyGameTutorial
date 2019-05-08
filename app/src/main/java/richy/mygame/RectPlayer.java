@@ -3,7 +3,9 @@ package richy.mygame;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 
@@ -55,6 +57,15 @@ public class RectPlayer implements GameObject {
         paint.setColor(color);
         canvas.drawRect(rectangle, paint);*/
         animManager.draw(canvas, rectangle);
+        Paint paint = new Paint();
+        paint.setTextSize(30);
+        paint.setColor(Color.WHITE);
+        canvas.drawText("Power-Ups: " + powerup, 50, 30 + paint.descent() - paint.ascent() + 175, paint);
+        if (Sword) {
+            paint.setTextSize(60);
+            paint.setColor(Color.BLUE);
+            canvas.drawText("Sword Activated", 50, 50 + paint.descent() - paint.ascent() + 175, paint);
+        }
 
     }
 
